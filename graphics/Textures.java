@@ -1,4 +1,4 @@
-package com.game.weaponsoftime.util;
+package com.game.weaponsoftime.graphics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
