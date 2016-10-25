@@ -4,19 +4,15 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
+import com.game.weaponsoftime.entities.EntityManager;
 import com.game.weaponsoftime.graphics.Renderer;
 import com.game.weaponsoftime.graphics.Textures;
 import com.game.weaponsoftime.level.LevelGenerator;
 import com.game.weaponsoftime.util.Input;
 
 public class Game extends ApplicationAdapter {
-
-	int WIDTH = 1280, HEIGHT = 720;
 
 	SpriteBatch batch;
 	Input input;
@@ -34,24 +30,35 @@ public class Game extends ApplicationAdapter {
 		Textures.init();
 
 		levelGenerator = new LevelGenerator();
-		levelGenerator.createMap(3, 3);
+		levelGenerator.createMap(50, 50);
 
 		Renderer.init();
 
 	}
 
+	int scrollSpeed = 5;
+
+	boolean temp = false;
+
 	public void update() {
 		if (input.keys[Keys.A])
-			camOffX--;
+			Renderer.camOffX -= scrollSpeed;
 		if (input.keys[Keys.D])
-			camOffX++;
+			Renderer.camOffX += scrollSpeed;
 		if (input.keys[Keys.W])
-			camOffY++;
+			Renderer.camOffY += scrollSpeed;
 		if (input.keys[Keys.S])
-			camOffY--;
-	}
+			Renderer.camOffY -= scrollSpeed;
 
-	int camOffX = 0, camOffY = 0;
+		if (input.keys[Keys.G]) {
+			if (!temp) {
+				levelGenerator.createMap(100, 100);
+				temp = true;
+			}
+		} else {
+			temp = false;
+		}
+	}
 
 	@Override
 	public void render() {
@@ -60,10 +67,9 @@ public class Game extends ApplicationAdapter {
 		Gdx.gl.glClearColor(1f, 0f, 1f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		Renderer.translate(camOffX, camOffY);
+		Renderer.translate(Renderer.camOffX, Renderer.camOffY);
 
-		Renderer.renderTexture(Textures.emptyTile, 50, 50, 50, 50);
-		Renderer.renderRect(new Rectangle(50, 100, 50, 50), new Color(0, 0, 1, 1));
+		EntityManager.renderEntities();
 
 	}
 

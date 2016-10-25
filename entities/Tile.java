@@ -1,8 +1,6 @@
 package com.game.weaponsoftime.entities;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.game.weaponsoftime.graphics.Renderer;
 import com.game.weaponsoftime.graphics.Textures;
 
@@ -15,10 +13,8 @@ public class Tile extends Entity {
 
 	}
 
-	ShapeRenderer sr = new ShapeRenderer(); // TODO: Remove after debug
-
 	@Override
-	public void render(SpriteBatch batch) {
+	public void render() {
 		if (solid)
 			Renderer.renderRect(bounds, new Color(0.3f, 0.3f, 0.3f, 1));
 		else

@@ -1,6 +1,5 @@
 package com.game.weaponsoftime.entities;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.game.weaponsoftime.util.Vec2f;
 
@@ -15,5 +14,5 @@ public abstract class Entity {
 
 	}
 
-	public abstract void render(SpriteBatch batch);
+	public abstract void render();
 }

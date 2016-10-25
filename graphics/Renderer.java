@@ -12,11 +12,14 @@ public class Renderer {
 	static ShapeRenderer sr;
 	static OrthographicCamera camera;
 
+	public static int WIDTH = 1280, HEIGHT = 720;
+	public static int camOffX = WIDTH / 2, camOffY = HEIGHT / 2;
+
 	public static void init() {
 		sb = new SpriteBatch();
 		sr = new ShapeRenderer();
-		camera = new OrthographicCamera(1280, 720);
-		camera.position.set(1280 / 2, 720 / 2, 0);
+		camera = new OrthographicCamera(WIDTH, HEIGHT);
+
 		camera.update();
 
 	}
