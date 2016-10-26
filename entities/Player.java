@@ -6,6 +6,10 @@ public class Player extends Entity {
 		super(x, y, width, height);
 	}
 
+	public void update() {
+
+	}
+
 	@Override
 	public void render() {
 

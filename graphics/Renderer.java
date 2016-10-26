@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
 public class Renderer {
-	static SpriteBatch sb;
-	static ShapeRenderer sr;
+	public static SpriteBatch sb;
+	public static ShapeRenderer sr;
 	static OrthographicCamera camera;
 
 	public static int WIDTH = 1280, HEIGHT = 720;

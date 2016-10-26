@@ -12,7 +12,10 @@ public class LevelGenerator {
 	int tileSize = 8;
 	Tile tiles[][];
 
+	ArrayList<Rectangle> allRooms = new ArrayList<Rectangle>();
+
 	public void createMap(int width, int height) {
+		allRooms.clear();
 		tiles = new Tile[width][height]; // Create array
 
 		// Create tiles, all solid
@@ -30,7 +33,68 @@ public class LevelGenerator {
 		// Generate maze
 		generateMaze();
 
+		// Connect the maze with the rooms
+		connect();
+
+		// Clear out some dead ends for better maze
+		for (int i = 0; i < tiles.length; i++) {
+			for (int j = 0; j < tiles[i].length; j++) {
+				if (!tiles[i][j].solid && checkNeighbours(new Point(i, j), true) == 3) {
+					tiles[i][j].solid = true;
+				}
+			}
+		}
+
+		// Clear out lonely walls
+
+		for (int i = 0; i < tiles.length; i++) {
+			for (int j = 0; j < tiles[i].length; j++) {
+				if (tiles[i][j].solid && checkNeighbours(new Point(i, j), false) > 3) {
+					tiles[i][j].solid = false;
+				}
+			}
+		}
+
+		// Clear out some dead ends for better maze
+		for (int k = 0; k < 100; k++)
+			for (int i = 0; i < tiles.length; i++) {
+				for (int j = 0; j < tiles[i].length; j++) {
+					if (!tiles[i][j].solid && checkNeighbours(new Point(i, j), true) == 3) {
+						tiles[i][j].solid = true;
+					}
+				}
+			}
+
 		EntityManager.tiles = tiles;
+	}
+
+	public void connect() {
+
+		for (int i = 0; i < tiles.length; i++) {
+			for (int j = 0; j < tiles[i].length; j++) {
+				if (tiles[i][j].solid && checkNeighbours(new Point(i, j), false) == 2) {
+					if (checkForRoom(new Point(i, j)) > 0) {
+						tiles[i][j].solid = false;
+					}
+				}
+			}
+		}
+	}
+
+	public int checkForRoom(Point p) {
+		// Checks around a tile how many non-solid tiles are a room 
+		int n = 0;
+		for (int i = 0; i < allRooms.size(); i++) {
+			if (allRooms.get(i).intersects(new Rectangle(p.x - 1, p.y, 1, 1))
+					|| allRooms.get(i).intersects(new Rectangle(p.x + 1, p.y, 1, 1))
+					|| allRooms.get(i).intersects(new Rectangle(p.x, p.y - 1, 1, 1))
+					|| allRooms.get(i).intersects(new Rectangle(p.x, p.y + 1, 1, 1))) {
+				n++;
+				break;
+			}
+
+		}
+		return n;
 	}
 
 	public void generateMaze() {
@@ -57,7 +121,7 @@ public class LevelGenerator {
 
 		while (!walls.isEmpty()) {
 			int rand = (int) (Math.random() * walls.size());
-			if (checkNeighbours(wallsXY.get(rand)) > 1) {
+			if (checkNeighbours(wallsXY.get(rand), false) > 1) {
 				wallsXY.remove(rand);
 				walls.remove(rand);
 			} else {
@@ -88,16 +152,16 @@ public class LevelGenerator {
 
 	}
 
-	public int checkNeighbours(Point p) {
+	public int checkNeighbours(Point p, boolean solid) {
 		// Returns neighbours that are part of the maze
 		int n = 0;
-		if (p.x > 1 && !tiles[p.x - 1][p.y].solid)
+		if (p.x > 1 && tiles[p.x - 1][p.y].solid == solid)
 			n++;
-		if (p.x < tiles.length - 2 && !tiles[p.x + 1][p.y].solid)
+		if (p.x < tiles.length - 2 && tiles[p.x + 1][p.y].solid == solid)
 			n++;
-		if (p.y > 1 && !tiles[p.x][p.y - 1].solid)
+		if (p.y > 1 && tiles[p.x][p.y - 1].solid == solid)
 			n++;
-		if (p.y < tiles[0].length - 2 && !tiles[p.x][p.y + 1].solid)
+		if (p.y < tiles[0].length - 2 && tiles[p.x][p.y + 1].solid == solid)
 			n++;
 		return n;
 
@@ -110,7 +174,7 @@ public class LevelGenerator {
 		int minRoomHeight = 10;
 		int maxRoomWidth = 20;
 		int maxRoomHeight = 20;
-		ArrayList<Rectangle> allRooms = new ArrayList<Rectangle>();
+
 		while (attempts > 0) {
 			// Create a random room
 			Rectangle room = new Rectangle((int) (Math.random() * (tiles.length - maxRoomWidth)) + 1,
@@ -135,6 +199,7 @@ public class LevelGenerator {
 				allRooms.add(room);
 			}
 		}
+
 	}
 
 	public void createRoom(Rectangle r) {

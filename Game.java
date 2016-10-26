@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.game.weaponsoftime.entities.EntityManager;
 import com.game.weaponsoftime.graphics.Renderer;
 import com.game.weaponsoftime.graphics.Textures;
@@ -14,16 +13,13 @@ import com.game.weaponsoftime.util.Input;
 
 public class Game extends ApplicationAdapter {
 
-	SpriteBatch batch;
 	Input input;
 
 	LevelGenerator levelGenerator;
 
 	@Override
 	public void create() {
-
-		batch = new SpriteBatch();
-
+		//Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 		input = new Input();
 		Gdx.input.setInputProcessor((InputProcessor) input);
 
@@ -52,7 +48,7 @@ public class Game extends ApplicationAdapter {
 
 		if (input.keys[Keys.G]) {
 			if (!temp) {
-				levelGenerator.createMap(100, 100);
+				levelGenerator.createMap(50, 50);
 				temp = true;
 			}
 		} else {
@@ -75,7 +71,8 @@ public class Game extends ApplicationAdapter {
 
 	@Override
 	public void dispose() {
-		batch.dispose();
+		Renderer.sb.dispose();
+		Renderer.sr.dispose();
 
 	}
 }
