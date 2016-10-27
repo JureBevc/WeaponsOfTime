@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
-import com.game.weaponsoftime.entities.EntityManager;
 import com.game.weaponsoftime.entities.Tile;
 
 public class LevelGenerator {
@@ -13,6 +12,12 @@ public class LevelGenerator {
 	Tile tiles[][];
 
 	ArrayList<Rectangle> allRooms = new ArrayList<Rectangle>();
+
+	Level level;
+
+	public LevelGenerator(Level level) {
+		this.level = level;
+	}
 
 	public void createMap(int width, int height) {
 		allRooms.clear();
@@ -65,7 +70,7 @@ public class LevelGenerator {
 				}
 			}
 
-		EntityManager.tiles = tiles;
+		level.tiles = tiles;
 	}
 
 	public void connect() {

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.game.weaponsoftime.entities.EntityManager;
 import com.game.weaponsoftime.graphics.Renderer;
 import com.game.weaponsoftime.graphics.Textures;
+import com.game.weaponsoftime.level.Level;
 import com.game.weaponsoftime.level.LevelGenerator;
 import com.game.weaponsoftime.util.Input;
 
@@ -17,6 +18,8 @@ public class Game extends ApplicationAdapter {
 
 	LevelGenerator levelGenerator;
 
+	Level level;
+
 	@Override
 	public void create() {
 		//Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
@@ -25,7 +28,9 @@ public class Game extends ApplicationAdapter {
 
 		Textures.init();
 
-		levelGenerator = new LevelGenerator();
+		level = new Level();
+
+		levelGenerator = new LevelGenerator(level);
 		levelGenerator.createMap(50, 50);
 
 		Renderer.init();
@@ -65,6 +70,7 @@ public class Game extends ApplicationAdapter {
 
 		Renderer.translate(Renderer.camOffX, Renderer.camOffY);
 
+		level.renderLevel();
 		EntityManager.renderEntities();
 
 	}

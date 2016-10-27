@@ -4,12 +4,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.game.weaponsoftime.graphics.Renderer;
 import com.game.weaponsoftime.graphics.Textures;
 
-public class Tile extends Entity {
+public class Tile extends GameObject {
 
-	public boolean solid = false;
+	public boolean solid;
 
 	public Tile(float x, float y, float width, float height) {
 		super(x, y, width, height);
+		solid = false;
 
 	}
 

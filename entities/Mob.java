@@ -1,13 +1,12 @@
 package com.game.weaponsoftime.entities;
 
-public class Player extends Mob {
+public class Mob extends GameObject {
 
-	public Player(float x, float y, float width, float height) {
+	public Mob(float x, float y, float width, float height) {
 		super(x, y, width, height);
 	}
 
 	public void update() {
-
 	}
 
 	@Override
