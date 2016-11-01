@@ -26,7 +26,7 @@ public class Mob extends GameObject {
 	public void move(float x, float y) {
 		pos.x += x;
 		pos.y += y;
-		System.out.println(pos.x + " " + pos.y);
+
 		spriteBounds = new Rectangle(pos.x - spriteBounds.width / 2, pos.y - spriteBounds.height / 2, spriteBounds.width, spriteBounds.height);
 		bounds = new Rectangle(pos.x - bounds.width / 2, spriteBounds.y, bounds.width, bounds.height);
 

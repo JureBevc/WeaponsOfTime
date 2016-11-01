@@ -42,6 +42,8 @@ public class Player extends Mob {
 			vel = vel.add(new Vec2f(0, speed));
 		if (Game.input.keys[Keys.S])
 			vel = vel.add(new Vec2f(0, -speed));
+		
+		
 		if (vel.length() > 0)
 			vel = vel.norm().mul(speed);
 

@@ -10,7 +10,7 @@ public class Collision {
 
 	public static boolean checkWalls(Mob mob, float x, float y) {
 		Tile tiles[][] = Game.level.tiles;
-		Rectangle rect = mob.bounds;
+		Rectangle rect = new Rectangle(mob.bounds);
 		Vector2 center = new Vector2();
 		rect.getCenter(center);
 		center.add(new Vector2(x, y));
