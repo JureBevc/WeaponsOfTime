@@ -1,25 +1,24 @@
 package com.game.weaponsoftime.entities;
 
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.game.weaponsoftime.graphics.Renderer;
 import com.game.weaponsoftime.graphics.Textures;
 
 public class Tile extends GameObject {
 
 	public boolean solid;
+	public TextureRegion texture;
 
 	public Tile(float x, float y, float width, float height) {
 		super(x, y, width, height);
 		solid = false;
+		texture = new TextureRegion(Textures.emptyTile);
 
 	}
 
 	@Override
 	public void render() {
-		if (solid)
-			Renderer.renderRect(bounds, new Color(0.3f, 0.3f, 0.3f, 1));
-		else
-			Renderer.renderTexture(Textures.emptyTile, bounds.x, bounds.y, bounds.width, bounds.height);
+		Renderer.renderTextureRegion(texture, bounds.x, bounds.y, bounds.width, bounds.height);
 	}
 
 }

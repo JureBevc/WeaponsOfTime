@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -13,7 +14,7 @@ public class Renderer {
 	static OrthographicCamera camera;
 
 	public static int WIDTH = 1280, HEIGHT = 720;
-	public static int camOffX = WIDTH / 2, camOffY = HEIGHT / 2;
+	public static float camOffX = WIDTH / 2, camOffY = HEIGHT / 2;
 
 	public static void init() {
 		sb = new SpriteBatch();
@@ -40,15 +41,23 @@ public class Renderer {
 		}
 	}
 
-	public static void translate(int x, int y) {
+	public static void moveCam(float x, float y) {
 		camera.position.x = x;
 		camera.position.y = y;
+		camOffX = camera.position.x;
+		camOffY = camera.position.y;
 		camera.update();
 		sb.setProjectionMatrix(camera.combined);
 		sr.setProjectionMatrix(camera.combined);
 	}
 
 	public static void renderTexture(Texture texture, float x, float y, float w, float h) {
+		startSpriteBatch();
+		sb.draw(texture, x, y, w, h);
+		sb.end();
+	}
+	
+	public static void renderTextureRegion(TextureRegion texture, float x, float y, float w, float h) {
 		startSpriteBatch();
 		sb.draw(texture, x, y, w, h);
 		sb.end();

@@ -2,7 +2,7 @@ package com.game.weaponsoftime.util;
 
 public class Vec2f {
 
-	float x, y;
+	public float x, y;
 
 	public Vec2f(float x, float y) {
 		this.x = x;
@@ -31,5 +31,9 @@ public class Vec2f {
 
 	public double angle(Vec2f v) {
 		return Math.acos(dot(v) / (length() * v.length()));
+	}
+
+	public Vec2f norm() {
+		return new Vec2f(x / length(), y / length());
 	}
 }
