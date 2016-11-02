@@ -11,7 +11,7 @@ import com.game.weaponsoftime.graphics.Textures;
 
 public class LevelGenerator {
 
-	int tileSize = Textures.emptyTile.getWidth() * 2;
+	int tileSize = Textures.emptyTile.getTexture().getWidth() * 2;
 	Tile tiles[][];
 
 	ArrayList<Rectangle> allRooms = new ArrayList<Rectangle>();
@@ -72,19 +72,26 @@ public class LevelGenerator {
 	}
 
 	public void addMobs() {
-		level.mobs.clear();
+		level.mobs.clear(); // Clear mob list
+		
+		// Define entrance and exit of level
 		outerloop: for (int i = 0; i < tiles.length; i++) {
 			for (int j = 0; j < tiles[i].length; j++) {
-				if (!tiles[i][j].solid) {
-					level.player = new Player(tiles[i][j].pos.x, tiles[i][j].pos.y + tiles[i][j].bounds.height / 2, tileSize / 4, tileSize / 4, Textures.spriteTest);
-					level.mobs.add(level.player);
+				if (!tiles[i][j].solid && checkNeighbours(new Point(i, j), false) >= 4) {
+					level.entrance = tiles[i][j];
 					break outerloop;
 				}
 			}
 		}
+
+		// Create Player and add him to mob list
+		level.player = new Player(level.entrance.pos.x, level.entrance.pos.y + level.entrance.bounds.height / 2,
+				tileSize / 4, tileSize / 4, Textures.spriteTest);
+		level.mobs.add(level.player);
 	}
 
-	public void addTextures() {
+	public void addTextures() { 
+		// Add textures to all tiles in level
 		int w = 16, h = 16;
 		TextureRegion floor[][] = new TextureRegion(Textures.cobbleSheet).split(w, h);
 		TextureRegion wall[][] = new TextureRegion(Textures.cobbleWallSheet).split(w, h);
@@ -119,7 +126,10 @@ public class LevelGenerator {
 		// Checks around a tile how many non-solid tiles are a room
 		int n = 0;
 		for (int i = 0; i < allRooms.size(); i++) {
-			if (allRooms.get(i).intersects(new Rectangle(p.x - 1, p.y, 1, 1)) || allRooms.get(i).intersects(new Rectangle(p.x + 1, p.y, 1, 1)) || allRooms.get(i).intersects(new Rectangle(p.x, p.y - 1, 1, 1)) || allRooms.get(i).intersects(new Rectangle(p.x, p.y + 1, 1, 1))) {
+			if (allRooms.get(i).intersects(new Rectangle(p.x - 1, p.y, 1, 1))
+					|| allRooms.get(i).intersects(new Rectangle(p.x + 1, p.y, 1, 1))
+					|| allRooms.get(i).intersects(new Rectangle(p.x, p.y - 1, 1, 1))
+					|| allRooms.get(i).intersects(new Rectangle(p.x, p.y + 1, 1, 1))) {
 				n++;
 				break;
 			}
@@ -207,7 +217,10 @@ public class LevelGenerator {
 		int maxRoomHeight = 10;
 		while (attempts > 0) {
 			// Create a random room
-			Rectangle room = new Rectangle((int) (Math.random() * (tiles.length - maxRoomWidth)) + 1, (int) (Math.random() * (tiles[0].length - maxRoomHeight)) + 1, (int) (Math.random() * (maxRoomWidth - minRoomWidth)) + minRoomWidth, (int) (Math.random() * (maxRoomHeight - minRoomHeight)) + minRoomHeight);
+			Rectangle room = new Rectangle((int) (Math.random() * (tiles.length - maxRoomWidth)) + 1,
+					(int) (Math.random() * (tiles[0].length - maxRoomHeight)) + 1,
+					(int) (Math.random() * (maxRoomWidth - minRoomWidth)) + minRoomWidth,
+					(int) (Math.random() * (maxRoomHeight - minRoomHeight)) + minRoomHeight);
 
 			// Try to fit it in
 			boolean fits = true;

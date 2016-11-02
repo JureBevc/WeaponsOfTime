@@ -51,15 +51,31 @@ public class Renderer {
 		sr.setProjectionMatrix(camera.combined);
 	}
 
-	public static void renderTexture(Texture texture, float x, float y, float w, float h) {
+	public static void renderTexture(Texture texture, float x, float y, float w, float h, boolean flip) {
 		startSpriteBatch();
-		sb.draw(texture, x, y, w, h);
+		if (flip)
+			sb.draw(texture, x + w, y, -w, h);
+		else
+			sb.draw(texture, x, y, w, h);
+
 		sb.end();
 	}
-	
-	public static void renderTextureRegion(TextureRegion texture, float x, float y, float w, float h) {
+
+	public static void renderTextureRegion(TextureRegion texture, float x, float y, float w, float h, boolean flip) {
 		startSpriteBatch();
-		sb.draw(texture, x, y, w, h);
+		if (flip)
+			sb.draw(texture, x + w, y, -w, h);
+		else
+			sb.draw(texture, x, y, w, h);
+		sb.end();
+	}
+
+	public static void renderTextureRegion(TextureRegion texture, Rectangle bounds, boolean flip) {
+		startSpriteBatch();
+		if (flip)
+			sb.draw(texture, bounds.x + bounds.width, bounds.y, -bounds.width, bounds.height);
+		else
+			sb.draw(texture, bounds.x, bounds.y, bounds.width, bounds.height);
 		sb.end();
 	}
 

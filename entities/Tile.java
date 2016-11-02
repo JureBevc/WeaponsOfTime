@@ -1,6 +1,7 @@
 package com.game.weaponsoftime.entities;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.game.weaponsoftime.Game;
 import com.game.weaponsoftime.graphics.Renderer;
 import com.game.weaponsoftime.graphics.Textures;
 
@@ -18,7 +19,11 @@ public class Tile extends GameObject {
 
 	@Override
 	public void render() {
-		Renderer.renderTextureRegion(texture, bounds.x, bounds.y, bounds.width, bounds.height);
+		Renderer.renderTextureRegion(texture, bounds.x, bounds.y, bounds.width, bounds.height, false);
+		if (Game.level.entrance.equals(this)) {
+			Renderer.renderTextureRegion(Textures.levelEntrance, bounds.x, bounds.y, bounds.width, bounds.height,
+					false);
+		}
 	}
 
 }

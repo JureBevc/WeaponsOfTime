@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
+import com.game.weaponsoftime.graphics.AnimationManager;
 import com.game.weaponsoftime.graphics.Renderer;
 import com.game.weaponsoftime.graphics.Textures;
 import com.game.weaponsoftime.level.Level;
@@ -14,9 +15,10 @@ public class Game extends ApplicationAdapter {
 
 	public static Input input;
 
-	LevelGenerator levelGenerator;
-
+	public static LevelGenerator levelGenerator;
 	public static Level level;
+
+	public static AnimationManager animationManager;
 
 	@Override
 	public void create() {
@@ -25,6 +27,7 @@ public class Game extends ApplicationAdapter {
 		Gdx.input.setInputProcessor((InputProcessor) input);
 
 		Textures.init();
+		animationManager = new AnimationManager();
 
 		level = new Level();
 		levelGenerator = new LevelGenerator(level);
@@ -40,6 +43,7 @@ public class Game extends ApplicationAdapter {
 
 	public void update() {
 		level.updateLevel();
+		animationManager.update();
 	}
 
 	@Override
@@ -52,6 +56,7 @@ public class Game extends ApplicationAdapter {
 		Renderer.moveCam(level.player.pos.x, level.player.pos.y);
 
 		level.renderLevel();
+		animationManager.render();
 
 	}
 
