@@ -2,6 +2,8 @@ package com.game.weaponsoftime.util;
 
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.Vector3;
+import com.game.weaponsoftime.graphics.Renderer;
 
 public class Input implements InputProcessor {
 
@@ -9,6 +11,8 @@ public class Input implements InputProcessor {
 	public boolean LMB = false, RMB = false;
 
 	public boolean keys[] = new boolean[7000];
+
+	Vector3 vec3 = new Vector3();
 
 	@Override
 	public boolean keyDown(int keycode) {
@@ -24,14 +28,14 @@ public class Input implements InputProcessor {
 
 	@Override
 	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		x = screenX;
-		y = screenY;
+		Renderer.camera.unproject(vec3.set(screenX, screenY, 0)); // I have no idea how this works, but ok
+		x = (int) vec3.x;
+		y = (int) vec3.y;
 		if (button == Buttons.LEFT)
 			LMB = true;
 		if (button == Buttons.RIGHT)
@@ -41,8 +45,9 @@ public class Input implements InputProcessor {
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		x = screenX;
-		y = screenY;
+		Renderer.camera.unproject(vec3.set(screenX, screenY, 0));
+		x = (int) vec3.x;
+		y = (int) vec3.y;
 		if (button == Buttons.LEFT)
 			LMB = false;
 		if (button == Buttons.RIGHT)
@@ -52,20 +57,22 @@ public class Input implements InputProcessor {
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// TODO Auto-generated method stub
+		Renderer.camera.unproject(vec3.set(screenX, screenY, 0));
+		x = (int) vec3.x;
+		y = (int) vec3.y;
 		return false;
 	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		x = screenX;
-		y = screenY;
+		Renderer.camera.unproject(vec3.set(screenX, screenY, 0));
+		x = (int) vec3.x;
+		y = (int) vec3.y;
 		return false;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

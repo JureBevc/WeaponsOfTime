@@ -1,17 +1,19 @@
 package com.game.weaponsoftime.level;
 
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
+import com.game.weaponsoftime.Game;
 import com.game.weaponsoftime.entities.Player;
 import com.game.weaponsoftime.entities.Tile;
+import com.game.weaponsoftime.graphics.Animation;
 import com.game.weaponsoftime.graphics.Textures;
+import com.game.weaponsoftime.util.Point;
 
 public class LevelGenerator {
 
-	int tileSize = Textures.emptyTile.getTexture().getWidth() * 2;
+	int tileSize = Textures.emptyTile.getTexture().getWidth();
 	Tile tiles[][];
 
 	ArrayList<Rectangle> allRooms = new ArrayList<Rectangle>();
@@ -20,6 +22,7 @@ public class LevelGenerator {
 
 	public LevelGenerator(Level level) {
 		this.level = level;
+
 	}
 
 	public void createMap(int width, int height) {
@@ -73,12 +76,13 @@ public class LevelGenerator {
 
 	public void addMobs() {
 		level.mobs.clear(); // Clear mob list
-		
+
 		// Define entrance and exit of level
 		outerloop: for (int i = 0; i < tiles.length; i++) {
 			for (int j = 0; j < tiles[i].length; j++) {
 				if (!tiles[i][j].solid && checkNeighbours(new Point(i, j), false) >= 4) {
 					level.entrance = tiles[i][j];
+					Game.animationManager.animations.add(new Animation(Textures.levelPortal, 3, 1, 5, level.entrance));
 					break outerloop;
 				}
 			}
@@ -86,11 +90,11 @@ public class LevelGenerator {
 
 		// Create Player and add him to mob list
 		level.player = new Player(level.entrance.pos.x, level.entrance.pos.y + level.entrance.bounds.height / 2,
-				tileSize / 4, tileSize / 4, Textures.spriteTest);
+				tileSize / 4, tileSize / 4, Textures.knightIdle);
 		level.mobs.add(level.player);
 	}
 
-	public void addTextures() { 
+	public void addTextures() {
 		// Add textures to all tiles in level
 		int w = 16, h = 16;
 		TextureRegion floor[][] = new TextureRegion(Textures.cobbleSheet).split(w, h);
@@ -126,10 +130,10 @@ public class LevelGenerator {
 		// Checks around a tile how many non-solid tiles are a room
 		int n = 0;
 		for (int i = 0; i < allRooms.size(); i++) {
-			if (allRooms.get(i).intersects(new Rectangle(p.x - 1, p.y, 1, 1))
-					|| allRooms.get(i).intersects(new Rectangle(p.x + 1, p.y, 1, 1))
-					|| allRooms.get(i).intersects(new Rectangle(p.x, p.y - 1, 1, 1))
-					|| allRooms.get(i).intersects(new Rectangle(p.x, p.y + 1, 1, 1))) {
+			if (allRooms.get(i).overlaps(new Rectangle(p.x - 1, p.y, 1, 1))
+					|| allRooms.get(i).overlaps(new Rectangle(p.x + 1, p.y, 1, 1))
+					|| allRooms.get(i).overlaps(new Rectangle(p.x, p.y - 1, 1, 1))
+					|| allRooms.get(i).overlaps(new Rectangle(p.x, p.y + 1, 1, 1))) {
 				n++;
 				break;
 			}
@@ -225,7 +229,7 @@ public class LevelGenerator {
 			// Try to fit it in
 			boolean fits = true;
 			for (int i = 0; i < allRooms.size(); i++) {
-				if (allRooms.get(i).intersects(room)) {
+				if (allRooms.get(i).overlaps(room)) {
 					fits = false;
 					break;
 				}

@@ -7,7 +7,8 @@ public class Animation {
 
 	TextureRegion sheet; // Sprite sheet
 	GameObject object; // The game object with the animation
-	int nx, ny, interval; // number of frames in x, number of frames in y, interval of animation
+	int nx, ny; // number of frames in x, number of frames in y, interval of animation
+	public int interval;
 	int w, h; // width and height of one frame
 
 	public Animation(TextureRegion sheet, int nx, int ny, int interval, GameObject object) {
@@ -41,8 +42,9 @@ public class Animation {
 
 	}
 
-	public void renderAnimation() {
-		Renderer.renderTextureRegion(sheet, object.spriteBounds.x, object.spriteBounds.y, w, h, false);
+	public void renderAnimation(boolean flipped) {
+
+		Renderer.renderTextureRegion(sheet, object.pos.x - w / 2, object.pos.y - h / 2, w, h, flipped);
 
 	}
 

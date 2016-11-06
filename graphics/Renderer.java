@@ -11,9 +11,10 @@ import com.badlogic.gdx.math.Rectangle;
 public class Renderer {
 	public static SpriteBatch sb;
 	public static ShapeRenderer sr;
-	static OrthographicCamera camera;
+	public static OrthographicCamera camera;
 
 	public static int WIDTH = 1280, HEIGHT = 720;
+	public static float SCALE = 0.5f;
 	public static float camOffX = WIDTH / 2, camOffY = HEIGHT / 2;
 
 	public static void init() {
@@ -49,6 +50,11 @@ public class Renderer {
 		camera.update();
 		sb.setProjectionMatrix(camera.combined);
 		sr.setProjectionMatrix(camera.combined);
+	}
+
+	public static void zoomCam(float scale) {
+		camera.zoom = scale;
+		camera.update();
 	}
 
 	public static void renderTexture(Texture texture, float x, float y, float w, float h, boolean flip) {

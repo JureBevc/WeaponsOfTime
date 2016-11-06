@@ -3,7 +3,9 @@ package com.game.weaponsoftime;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.math.Rectangle;
 import com.game.weaponsoftime.graphics.AnimationManager;
 import com.game.weaponsoftime.graphics.Renderer;
 import com.game.weaponsoftime.graphics.Textures;
@@ -22,7 +24,8 @@ public class Game extends ApplicationAdapter {
 
 	@Override
 	public void create() {
-		// Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+		//Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+
 		input = new Input();
 		Gdx.input.setInputProcessor((InputProcessor) input);
 
@@ -34,6 +37,7 @@ public class Game extends ApplicationAdapter {
 		levelGenerator.createMap(50, 50);
 
 		Renderer.init();
+		Renderer.zoomCam(Renderer.SCALE);
 
 	}
 
@@ -42,6 +46,7 @@ public class Game extends ApplicationAdapter {
 	boolean temp = false;
 
 	public void update() {
+		
 		level.updateLevel();
 		animationManager.update();
 	}
@@ -57,6 +62,8 @@ public class Game extends ApplicationAdapter {
 
 		level.renderLevel();
 		animationManager.render();
+
+		Renderer.renderRect(new Rectangle(input.x, input.y, 10, 10), new Color(1, 0, 1, 1));
 
 	}
 

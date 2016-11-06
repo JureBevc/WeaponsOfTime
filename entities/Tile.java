@@ -20,9 +20,8 @@ public class Tile extends GameObject {
 	@Override
 	public void render() {
 		Renderer.renderTextureRegion(texture, bounds.x, bounds.y, bounds.width, bounds.height, false);
-		if (Game.level.entrance.equals(this)) {
-			Renderer.renderTextureRegion(Textures.levelEntrance, bounds.x, bounds.y, bounds.width, bounds.height,
-					false);
+		if (Game.level.entrance.equals(this) && animation != null) {
+			animation.renderAnimation(false);
 		}
 	}
 

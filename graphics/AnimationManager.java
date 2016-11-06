@@ -12,6 +12,6 @@ public class AnimationManager {
 
 	public void render() {
 		for (Animation a : animations)
-			a.renderAnimation();
+			a.renderAnimation(false);
 	}
 }

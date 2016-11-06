@@ -10,8 +10,8 @@ public class Mob extends GameObject {
 	public Mob(float x, float y, float width, float height, TextureRegion sprite) {
 		super(x, y, width, height);
 		this.sprite = sprite;
-		spriteBounds = new Rectangle(pos.x - sprite.getRegionWidth(), pos.y - sprite.getRegionHeight(),
-				sprite.getRegionWidth() * 2, sprite.getRegionHeight() * 2);
+		spriteBounds = new Rectangle(pos.x - sprite.getRegionWidth() / 2, pos.y - sprite.getRegionHeight() / 2,
+				sprite.getRegionWidth(), sprite.getRegionHeight());
 		bounds = new Rectangle(pos.x - width / 2, spriteBounds.y, width, height);
 	}
 
