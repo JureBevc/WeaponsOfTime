@@ -23,6 +23,7 @@ public class Tile extends GameObject {
 		if (Game.level.entrance.equals(this) && animation != null) {
 			animation.renderAnimation(false);
 		}
+		//Renderer.renderRect(bounds, new Color(0, 0, 1, 1));
 	}
 
 }

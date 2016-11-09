@@ -46,7 +46,7 @@ public class Game extends ApplicationAdapter {
 	boolean temp = false;
 
 	public void update() {
-		
+
 		level.updateLevel();
 		animationManager.update();
 	}
@@ -59,18 +59,18 @@ public class Game extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		Renderer.moveCam(level.player.pos.x, level.player.pos.y);
-
+		Renderer.sb.begin();
 		level.renderLevel();
 		animationManager.render();
 
-		Renderer.renderRect(new Rectangle(input.x, input.y, 10, 10), new Color(1, 0, 1, 1));
+		Renderer.renderTextureRegion(Textures.emptyTile, new Rectangle(input.x, input.y, 10, 10), false);
+		Renderer.sb.end();
 
 	}
 
 	@Override
 	public void dispose() {
 		Renderer.sb.dispose();
-		Renderer.sr.dispose();
 
 	}
 }
