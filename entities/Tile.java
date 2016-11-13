@@ -13,17 +13,17 @@ public class Tile extends GameObject {
 	public Tile(float x, float y, float width, float height) {
 		super(x, y, width, height);
 		solid = false;
-		texture = new TextureRegion(Textures.emptyTile);
+		texture = new TextureRegion(Textures.floor_wood);
 
 	}
 
 	@Override
 	public void render() {
 		Renderer.renderTextureRegion(texture, bounds.x, bounds.y, bounds.width, bounds.height, false);
-		if (Game.level.entrance.equals(this) && animation != null) {
-			animation.renderAnimation(false);
+		if ((Game.level.entrance.equals(this) || Game.level.exit.equals(this)) && runningAnimation != null) {
+			runningAnimation.renderAnimation(false);
 		}
-		//Renderer.renderRect(bounds, new Color(0, 0, 1, 1));
+		// Renderer.renderRect(bounds, new Color(0, 0, 1, 1));
 	}
 
 }

@@ -12,9 +12,9 @@ public class Player extends Mob {
 
 	public Player(float x, float y, float width, float height, TextureRegion sprite) {
 		super(x, y, width, height, sprite);
-		animation = new Animation(Textures.knightRunning, 14, 1,
+		runningAnimation = new Animation(Textures.knightRunning, 14, 1,
 				(int) ((60 / 1000.0) * (60 - 20 * vel.length() / speed)), this);
-		idleAnimation = new Animation(Textures.knightIdle, 12, 1, (int) (60 / 1000.0 * 100), this);
+		idleAnimation = new Animation(Textures.knightIdle, 12, 1, (int) (60 / 1000.0 * 150), this);
 
 	}
 
@@ -23,8 +23,8 @@ public class Player extends Mob {
 
 	public void update() {
 		control();
-		animation.interval = (int) ((60 / 1000.0) * (60 - 20 * vel.length() / speed));
-		animation.updateAnimation();
+		runningAnimation.interval = (int) ((60 / 1000.0) * (60 - 20 * vel.length() / speed));
+		runningAnimation.updateAnimation();
 		idleAnimation.updateAnimation();
 
 	}
@@ -36,7 +36,7 @@ public class Player extends Mob {
 		if (vel.length() == 0) {
 			idleAnimation.renderAnimation(spriteDirection);
 		} else
-			animation.renderAnimation(spriteDirection);
+			runningAnimation.renderAnimation(spriteDirection);
 		//Renderer.renderRect(bounds, new Color(1, 0, 1, 1));
 	}
 

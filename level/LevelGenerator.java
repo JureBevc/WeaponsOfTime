@@ -13,7 +13,7 @@ import com.game.weaponsoftime.util.Point;
 
 public class LevelGenerator {
 
-	int tileSize = Textures.emptyTile.getTexture().getWidth();
+	int tileSize = 16;
 	Tile tiles[][];
 
 	ArrayList<Rectangle> allRooms = new ArrayList<Rectangle>();
@@ -27,11 +27,11 @@ public class LevelGenerator {
 
 	public void createMap(int width, int height) {
 		allRooms.clear();
-		tiles = new Tile[width][height]; // Create array
+		tiles = new Tile[width / 2][height / 2]; // Create array
 
 		// Create tiles, all solid
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
+		for (int i = 0; i < width / 2; i++) {
+			for (int j = 0; j < height / 2; j++) {
 				tiles[i][j] = new Tile(i * tileSize, j * tileSize, tileSize, tileSize);
 
 				tiles[i][j].solid = true;
@@ -67,11 +67,19 @@ public class LevelGenerator {
 					}
 				}
 			}
-
+		// Double the tiles
+		Tile[][] temp = new Tile[width][height];
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				temp[i][j] = new Tile(i * tileSize, j * tileSize, tileSize, tileSize);
+				temp[i][j].solid = tiles[i / 2][j / 2].solid;
+			}
+		}
+		tiles = temp;
 		addTextures();
 		level.tiles = tiles;
 		addMobs();
-
+		addExit();
 	}
 
 	public void addMobs() {
@@ -89,23 +97,34 @@ public class LevelGenerator {
 		}
 
 		// Create Player and add him to mob list
-		level.player = new Player(level.entrance.pos.x, level.entrance.pos.y + level.entrance.bounds.height / 2,
-				tileSize / 4, tileSize / 4, Textures.knightIdle);
+		level.player = new Player(level.entrance.pos.x, level.entrance.pos.y + level.entrance.bounds.height / 2, tileSize / 4, tileSize / 4, Textures.knightIdle);
 		level.mobs.add(level.player);
+	}
+	
+	public void addExit(){
+		outerloop: for (int i = tiles.length - 1; i >= 0; i--) {
+			for (int j = tiles[i].length - 1; j >= 0; j--) {
+				if (!tiles[i][j].solid && checkNeighbours(new Point(i, j), false) >= 4) {
+					level.exit = tiles[i][j];
+					Game.animationManager.animations.add(new Animation(Textures.levelPortal, 3, 1, 5, level.exit));
+					break outerloop;
+				}
+			}
+		}
 	}
 
 	public void addTextures() {
 		// Add textures to all tiles in level
 		int w = 16, h = 16;
-		TextureRegion floor[][] = new TextureRegion(Textures.cobbleSheet).split(w, h);
-		TextureRegion wall[][] = new TextureRegion(Textures.cobbleWallSheet).split(w, h);
-
+		TextureRegion floor[][] = Textures.floor_wood.split(w, h);
+		TextureRegion wall[][] = Textures.wall_panel.split(w, h);
+		System.out.println(floor[0].length);
 		for (int i = 0; i < tiles.length; i++) {
 			for (int j = 0; j < tiles[i].length; j++) {
 				if (!tiles[i][j].solid) {
-					tiles[i][j].texture = floor[(int) (Math.random() * 2)][(int) (Math.random() * 2)];
+					tiles[i][j].texture = floor[0][j % 2];
 				} else {
-					tiles[i][j].texture = wall[(int) (Math.random() * 2)][(int) (Math.random() * 2)];
+					tiles[i][j].texture = wall[0][j % 2];
 
 				}
 			}
@@ -130,10 +149,7 @@ public class LevelGenerator {
 		// Checks around a tile how many non-solid tiles are a room
 		int n = 0;
 		for (int i = 0; i < allRooms.size(); i++) {
-			if (allRooms.get(i).overlaps(new Rectangle(p.x - 1, p.y, 1, 1))
-					|| allRooms.get(i).overlaps(new Rectangle(p.x + 1, p.y, 1, 1))
-					|| allRooms.get(i).overlaps(new Rectangle(p.x, p.y - 1, 1, 1))
-					|| allRooms.get(i).overlaps(new Rectangle(p.x, p.y + 1, 1, 1))) {
+			if (allRooms.get(i).overlaps(new Rectangle(p.x - 1, p.y, 1, 1)) || allRooms.get(i).overlaps(new Rectangle(p.x + 1, p.y, 1, 1)) || allRooms.get(i).overlaps(new Rectangle(p.x, p.y - 1, 1, 1)) || allRooms.get(i).overlaps(new Rectangle(p.x, p.y + 1, 1, 1))) {
 				n++;
 				break;
 			}
@@ -221,10 +237,7 @@ public class LevelGenerator {
 		int maxRoomHeight = 10;
 		while (attempts > 0) {
 			// Create a random room
-			Rectangle room = new Rectangle((int) (Math.random() * (tiles.length - maxRoomWidth)) + 1,
-					(int) (Math.random() * (tiles[0].length - maxRoomHeight)) + 1,
-					(int) (Math.random() * (maxRoomWidth - minRoomWidth)) + minRoomWidth,
-					(int) (Math.random() * (maxRoomHeight - minRoomHeight)) + minRoomHeight);
+			Rectangle room = new Rectangle((int) (Math.random() * (tiles.length - maxRoomWidth)) + 1, (int) (Math.random() * (tiles[0].length - maxRoomHeight)) + 1, (int) (Math.random() * (maxRoomWidth - minRoomWidth)) + minRoomWidth, (int) (Math.random() * (maxRoomHeight - minRoomHeight)) + minRoomHeight);
 
 			// Try to fit it in
 			boolean fits = true;

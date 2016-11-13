@@ -3,9 +3,9 @@ package com.game.weaponsoftime;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.game.weaponsoftime.graphics.AnimationManager;
 import com.game.weaponsoftime.graphics.Renderer;
 import com.game.weaponsoftime.graphics.Textures;
@@ -24,17 +24,20 @@ public class Game extends ApplicationAdapter {
 
 	@Override
 	public void create() {
-		//Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+		// Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 
 		input = new Input();
 		Gdx.input.setInputProcessor((InputProcessor) input);
+
+		Cursor customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("cursor.png")), 15, 15);
+		Gdx.graphics.setCursor(customCursor);
 
 		Textures.init();
 		animationManager = new AnimationManager();
 
 		level = new Level();
 		levelGenerator = new LevelGenerator(level);
-		levelGenerator.createMap(50, 50);
+		levelGenerator.createMap(100, 100);
 
 		Renderer.init();
 		Renderer.zoomCam(Renderer.SCALE);
@@ -63,7 +66,6 @@ public class Game extends ApplicationAdapter {
 		level.renderLevel();
 		animationManager.render();
 
-		Renderer.renderTextureRegion(Textures.emptyTile, new Rectangle(input.x, input.y, 10, 10), false);
 		Renderer.sb.end();
 
 	}
