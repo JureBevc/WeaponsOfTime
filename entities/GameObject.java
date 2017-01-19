@@ -8,9 +8,14 @@ public abstract class GameObject {
 	public Vec2f pos, size;
 	public Rectangle bounds;
 	public Rectangle spriteBounds;
+	
 	public Animation runningAnimation;
 	public Animation idleAnimation;
-	public Animation attackAnimation;
+	public Animation weaponRunningAnimation;
+	public Animation weaponIdleAnimation;
+	public Animation weaponAttackAnimation;
+
+	
 
 	public GameObject(float x, float y, float width, float height) {
 		pos = new Vec2f(x, y);

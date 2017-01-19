@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.game.weaponsoftime.Game;
 import com.game.weaponsoftime.entities.Player;
+import com.game.weaponsoftime.entities.Rat;
 import com.game.weaponsoftime.entities.Tile;
 import com.game.weaponsoftime.graphics.Animation;
 import com.game.weaponsoftime.graphics.Textures;
@@ -26,7 +27,10 @@ public class LevelGenerator {
 	}
 
 	public void createMap(int width, int height) {
+		Game.animationManager.animations.clear();
+		level = Game.level;
 		allRooms.clear();
+
 		tiles = new Tile[width / 2][height / 2]; // Create array
 
 		// Create tiles, all solid
@@ -77,36 +81,53 @@ public class LevelGenerator {
 		}
 		tiles = temp;
 		addTextures();
-		level.tiles = tiles;
+		Game.level.tiles = tiles;
 		addMobs();
 		addExit();
 	}
 
 	public void addMobs() {
-		level.mobs.clear(); // Clear mob list
-
+		Game.level.mobs.clear(); // Clear mob list
+		int ex = 0, ey = 0;
 		// Define entrance and exit of level
 		outerloop: for (int i = 0; i < tiles.length; i++) {
 			for (int j = 0; j < tiles[i].length; j++) {
 				if (!tiles[i][j].solid && checkNeighbours(new Point(i, j), false) >= 4) {
-					level.entrance = tiles[i][j];
-					Game.animationManager.animations.add(new Animation(Textures.levelPortal, 3, 1, 5, level.entrance));
+					ex = i;
+					ey = j;
+					Game.level.entrance = tiles[i][j];
+					Game.animationManager.animations
+							.add(new Animation(Textures.entrance, 3, 1, 5, Game.level.entrance));
 					break outerloop;
 				}
 			}
 		}
 
+		// Add mobs
+		for (int i = 0; i < tiles.length; i++) {
+			for (int j = 0; j < tiles[i].length; j++) {
+				if (!tiles[i][j].solid && checkNeighbours(new Point(i, j), false) >= 4
+						&& tileDistance(i, j, ex, ey) > 20 && Math.random() < 0.01) {
+					Game.level.mobs.add(new Rat(tiles[i][j].bounds.x, tiles[i][j].bounds.y, tiles[i][j].bounds.width,
+							tiles[i][j].bounds.height, Textures.ratRunning));
+
+				}
+			}
+		}
+
 		// Create Player and add him to mob list
-		level.player = new Player(level.entrance.pos.x, level.entrance.pos.y + level.entrance.bounds.height / 2, tileSize / 4, tileSize / 4, Textures.knightIdle);
-		level.mobs.add(level.player);
+		Game.level.player = new Player(Game.level.entrance.pos.x,
+				Game.level.entrance.pos.y + Game.level.entrance.bounds.height / 2, tileSize / 4, tileSize / 4,
+				Textures.knightRunning);
+		Game.level.mobs.add(Game.level.player);
 	}
-	
-	public void addExit(){
+
+	public void addExit() {
 		outerloop: for (int i = tiles.length - 1; i >= 0; i--) {
 			for (int j = tiles[i].length - 1; j >= 0; j--) {
 				if (!tiles[i][j].solid && checkNeighbours(new Point(i, j), false) >= 4) {
-					level.exit = tiles[i][j];
-					Game.animationManager.animations.add(new Animation(Textures.levelPortal, 3, 1, 5, level.exit));
+					Game.level.exit = tiles[i][j];
+					Game.animationManager.animations.add(new Animation(Textures.exit, 3, 1, 5, Game.level.exit));
 					break outerloop;
 				}
 			}
@@ -121,6 +142,10 @@ public class LevelGenerator {
 		System.out.println(floor[0].length);
 		for (int i = 0; i < tiles.length; i++) {
 			for (int j = 0; j < tiles[i].length; j++) {
+				if(tiles[i][j].solid && checkNeighbours(new Point(i,j), true) == 4){
+					tiles[i][j].texture = Textures.black_tile;
+					continue;
+				}
 				if (!tiles[i][j].solid) {
 					tiles[i][j].texture = floor[0][j % 2];
 				} else {
@@ -149,7 +174,10 @@ public class LevelGenerator {
 		// Checks around a tile how many non-solid tiles are a room
 		int n = 0;
 		for (int i = 0; i < allRooms.size(); i++) {
-			if (allRooms.get(i).overlaps(new Rectangle(p.x - 1, p.y, 1, 1)) || allRooms.get(i).overlaps(new Rectangle(p.x + 1, p.y, 1, 1)) || allRooms.get(i).overlaps(new Rectangle(p.x, p.y - 1, 1, 1)) || allRooms.get(i).overlaps(new Rectangle(p.x, p.y + 1, 1, 1))) {
+			if (allRooms.get(i).overlaps(new Rectangle(p.x - 1, p.y, 1, 1))
+					|| allRooms.get(i).overlaps(new Rectangle(p.x + 1, p.y, 1, 1))
+					|| allRooms.get(i).overlaps(new Rectangle(p.x, p.y - 1, 1, 1))
+					|| allRooms.get(i).overlaps(new Rectangle(p.x, p.y + 1, 1, 1))) {
 				n++;
 				break;
 			}
@@ -237,7 +265,10 @@ public class LevelGenerator {
 		int maxRoomHeight = 10;
 		while (attempts > 0) {
 			// Create a random room
-			Rectangle room = new Rectangle((int) (Math.random() * (tiles.length - maxRoomWidth)) + 1, (int) (Math.random() * (tiles[0].length - maxRoomHeight)) + 1, (int) (Math.random() * (maxRoomWidth - minRoomWidth)) + minRoomWidth, (int) (Math.random() * (maxRoomHeight - minRoomHeight)) + minRoomHeight);
+			Rectangle room = new Rectangle((int) (Math.random() * (tiles.length - maxRoomWidth)) + 1,
+					(int) (Math.random() * (tiles[0].length - maxRoomHeight)) + 1,
+					(int) (Math.random() * (maxRoomWidth - minRoomWidth)) + minRoomWidth,
+					(int) (Math.random() * (maxRoomHeight - minRoomHeight)) + minRoomHeight);
 
 			// Try to fit it in
 			boolean fits = true;
@@ -269,5 +300,9 @@ public class LevelGenerator {
 				}
 			}
 		}
+	}
+
+	public int tileDistance(int x1, int y1, int x2, int y2) {
+		return Math.abs(x1 - x2) + Math.abs(y1 - y2);
 	}
 }

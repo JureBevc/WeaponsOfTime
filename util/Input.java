@@ -8,7 +8,7 @@ import com.game.weaponsoftime.graphics.Renderer;
 public class Input implements InputProcessor {
 
 	public int x = 0, y = 0;
-	public boolean LMB = false, RMB = false;
+	public boolean LMB = false, RMB = false, LMB_Click = false;
 
 	public boolean keys[] = new boolean[7000];
 
@@ -36,8 +36,10 @@ public class Input implements InputProcessor {
 		Renderer.camera.unproject(vec3.set(screenX, screenY, 0)); // I have no idea how this works, but ok
 		x = (int) vec3.x;
 		y = (int) vec3.y;
-		if (button == Buttons.LEFT)
+		if (button == Buttons.LEFT) {
+			LMB_Click = true;
 			LMB = true;
+		}
 		if (button == Buttons.RIGHT)
 			RMB = true;
 		return false;

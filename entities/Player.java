@@ -12,32 +12,32 @@ public class Player extends Mob {
 
 	public Player(float x, float y, float width, float height, TextureRegion sprite) {
 		super(x, y, width, height, sprite);
+
 		runningAnimation = new Animation(Textures.knightRunning, 14, 1,
 				(int) ((60 / 1000.0) * (60 - 20 * vel.length() / speed)), this);
+
 		idleAnimation = new Animation(Textures.knightIdle, 12, 1, (int) (60 / 1000.0 * 150), this);
 
-	}
+		weaponRunningAnimation = new Animation(Textures.swordRunning, 14, 1, runningAnimation.interval, this);
+		weaponRunningAnimation.isWeapon();
+		weaponIdleAnimation = new Animation(Textures.swordRunning, 14, 1, 0, this);
+		weaponIdleAnimation.isWeapon();
+		maxHP = hp = 50;
 
-	float speed = 2;
-	Vec2f vel = new Vec2f(0, 0);
+		speed = 2;
+	}
 
 	public void update() {
 		control();
 		runningAnimation.interval = (int) ((60 / 1000.0) * (60 - 20 * vel.length() / speed));
-		runningAnimation.updateAnimation();
-		idleAnimation.updateAnimation();
+		weaponRunningAnimation.interval = runningAnimation.interval;
+		updateAnimation();
 
 	}
 
-	boolean spriteDirection = false; // False = Right, True = Left
-
 	@Override
 	public void render() {
-		if (vel.length() == 0) {
-			idleAnimation.renderAnimation(spriteDirection);
-		} else
-			runningAnimation.renderAnimation(spriteDirection);
-		//Renderer.renderRect(bounds, new Color(1, 0, 1, 1));
+		renderAnimation();
 	}
 
 	public void control() {

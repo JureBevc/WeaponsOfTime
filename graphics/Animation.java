@@ -11,8 +11,10 @@ public class Animation {
 	public int interval;
 	int w, h; // width and height of one frame
 
+	public boolean isWeapon = false;
+
 	public Animation(TextureRegion sheet, int nx, int ny, int interval, GameObject object) {
-		this.sheet = sheet;
+		this.sheet = new TextureRegion(sheet);
 		this.object = object;
 		this.nx = nx;
 		this.ny = ny;
@@ -27,6 +29,9 @@ public class Animation {
 	int ty = 0;
 
 	public void updateAnimation() {
+		if (interval == 0)
+			return;
+
 		tick++;
 		if (tick >= interval) {
 			tx++;
@@ -42,9 +47,22 @@ public class Animation {
 
 	}
 
+	public void setFrame(int x) {
+		sheet.setRegion(x * w, ty * h, w, h);
+	}
+
+	public void isWeapon() {
+		isWeapon = true;
+		offX = 13;
+		offY = 11;
+	}
+
+	int offX = 0, offY = 0;
+
 	public void renderAnimation(boolean flipped) {
 
-		Renderer.renderTextureRegion(sheet, object.pos.x - w / 2, object.pos.y - h / 2, w, h, flipped);
+		Renderer.renderTextureRegion(sheet, object.pos.x - w / 2 + offX * (flipped ? -1 : 1),
+				object.pos.y - h / 2 + offY, w, h, flipped);
 
 	}
 

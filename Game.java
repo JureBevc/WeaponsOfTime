@@ -29,15 +29,17 @@ public class Game extends ApplicationAdapter {
 		input = new Input();
 		Gdx.input.setInputProcessor((InputProcessor) input);
 
+		/* Set a custom cursor */
 		Cursor customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("cursor.png")), 15, 15);
 		Gdx.graphics.setCursor(customCursor);
 
 		Textures.init();
 		animationManager = new AnimationManager();
-
+		
+		/* Generate level */
 		level = new Level();
 		levelGenerator = new LevelGenerator(level);
-		levelGenerator.createMap(100, 100);
+		levelGenerator.createMap(50, 50);
 
 		Renderer.init();
 		Renderer.zoomCam(Renderer.SCALE);
@@ -52,6 +54,7 @@ public class Game extends ApplicationAdapter {
 
 		level.updateLevel();
 		animationManager.update();
+		input.LMB_Click = false;
 	}
 
 	@Override
