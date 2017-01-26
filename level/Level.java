@@ -2,42 +2,41 @@ package com.game.weaponsoftime.level;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.math.Rectangle;
-import com.game.weaponsoftime.Game;
 import com.game.weaponsoftime.entities.Mob;
 import com.game.weaponsoftime.entities.Player;
 import com.game.weaponsoftime.entities.Tile;
 import com.game.weaponsoftime.graphics.Renderer;
 import com.game.weaponsoftime.graphics.Textures;
+import com.game.weaponsoftime.util.Collision;
 
 public class Level {
 	// DEBUG VARIABLES
-	boolean RENDER_MOB_BOUNDS = false;
-	// END OF DEBUG
+	static boolean RENDER_MOB_BOUNDS = true;
+	//
 
-	public Tile tiles[][];
-	public Tile entrance;
-	public Tile exit;
+	public static Tile tiles[][]; // currently loaded tiles
+	public static Tile entrance; // entrance tile
+	public static Tile exit; // exit tile
 
-	public Player player;
-	public ArrayList<Mob> mobs = new ArrayList<Mob>();
+	public static Player player; // the player
+	public static ArrayList<Mob> mobs = new ArrayList<Mob>(); // every mob in level
 
-	public Level() {
+	public static void init() {
 
 	}
 
-	public void updateLevel() {
+	public static void updateLevel() {
 		for (Mob m : mobs)
 			m.update();
-		clearDead();
+		clearDead(); // remove dead mobs
 	}
 
-	public void renderLevel() {
+	public static void renderLevel() {
 
 		// Render tiles
 		for (Tile ta[] : tiles) {
 			for (Tile t : ta) {
-				if (onScreen(t.bounds))
+				if (Collision.onScreen(t.getBounds()))
 					t.render();
 			}
 		}
@@ -46,26 +45,19 @@ public class Level {
 		for (Mob m : mobs)
 			m.render();
 
-		// DEBUG AREA
-		if (RENDER_MOB_BOUNDS)
-			for (Mob m : mobs)
-				Renderer.renderTextureRegion(Textures.DEBUG, m.bounds, false);
-
 		// Exit of the level
 		if (player.pos.sub(exit.pos).length() < 20)
-			Game.levelGenerator.createMap(tiles.length, tiles[0].length);
+			LevelGenerator.createMap(tiles.length, tiles[0].length);
+
+		// DEBUG -- AREA -- BELOW
+		if (RENDER_MOB_BOUNDS)
+			for (Mob m : mobs)
+				Renderer.renderTextureRegion(Textures.DEBUG, m.getBounds(), false);
+
 	}
 
-	public boolean onScreen(Rectangle r) {
-		if (Renderer.camera.frustum.pointInFrustum(r.x, r.y, 0)
-				|| Renderer.camera.frustum.pointInFrustum(r.x + r.width, r.y, 0)
-				|| Renderer.camera.frustum.pointInFrustum(r.x, r.y + r.height, 0)
-				|| Renderer.camera.frustum.pointInFrustum(r.x + r.width, r.y + r.height, 0))
-			return true;
-		return false;
-	}
-
-	public void clearDead() {
+	/* For clearing dead mobs, called after they update */
+	public static void clearDead() {
 		for (int i = 0; i < mobs.size(); i++) {
 			if (mobs.get(i).hp <= 0) {
 				mobs.remove(i);

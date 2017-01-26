@@ -8,27 +8,19 @@ import com.game.weaponsoftime.Game;
 import com.game.weaponsoftime.entities.Player;
 import com.game.weaponsoftime.entities.Rat;
 import com.game.weaponsoftime.entities.Tile;
-import com.game.weaponsoftime.graphics.Animation;
+
 import com.game.weaponsoftime.graphics.Textures;
 import com.game.weaponsoftime.util.Point;
 
 public class LevelGenerator {
 
-	int tileSize = 16;
-	Tile tiles[][];
+	static int tileSize = 16;
+	static Tile tiles[][];
 
-	ArrayList<Rectangle> allRooms = new ArrayList<Rectangle>();
+	static ArrayList<Rectangle> allRooms = new ArrayList<Rectangle>();
 
-	Level level;
-
-	public LevelGenerator(Level level) {
-		this.level = level;
-
-	}
-
-	public void createMap(int width, int height) {
+	public static void createMap(int width, int height) {
 		Game.animationManager.animations.clear();
-		level = Game.level;
 		allRooms.clear();
 
 		tiles = new Tile[width / 2][height / 2]; // Create array
@@ -37,7 +29,6 @@ public class LevelGenerator {
 		for (int i = 0; i < width / 2; i++) {
 			for (int j = 0; j < height / 2; j++) {
 				tiles[i][j] = new Tile(i * tileSize, j * tileSize, tileSize, tileSize);
-
 				tiles[i][j].solid = true;
 			}
 		}
@@ -81,13 +72,13 @@ public class LevelGenerator {
 		}
 		tiles = temp;
 		addTextures();
-		Game.level.tiles = tiles;
+		Level.tiles = tiles;
 		addMobs();
 		addExit();
 	}
 
-	public void addMobs() {
-		Game.level.mobs.clear(); // Clear mob list
+	private static void addMobs() {
+		Level.mobs.clear(); // Clear mob list
 		int ex = 0, ey = 0;
 		// Define entrance and exit of level
 		outerloop: for (int i = 0; i < tiles.length; i++) {
@@ -95,9 +86,7 @@ public class LevelGenerator {
 				if (!tiles[i][j].solid && checkNeighbours(new Point(i, j), false) >= 4) {
 					ex = i;
 					ey = j;
-					Game.level.entrance = tiles[i][j];
-					Game.animationManager.animations
-							.add(new Animation(Textures.entrance, 3, 1, 5, Game.level.entrance));
+					Level.entrance = tiles[i][j];
 					break outerloop;
 				}
 			}
@@ -108,56 +97,54 @@ public class LevelGenerator {
 			for (int j = 0; j < tiles[i].length; j++) {
 				if (!tiles[i][j].solid && checkNeighbours(new Point(i, j), false) >= 4
 						&& tileDistance(i, j, ex, ey) > 20 && Math.random() < 0.01) {
-					Game.level.mobs.add(new Rat(tiles[i][j].bounds.x, tiles[i][j].bounds.y, tiles[i][j].bounds.width,
-							tiles[i][j].bounds.height, Textures.ratRunning));
+					Level.mobs.add(new Rat(tiles[i][j].getBounds().x, tiles[i][j].getBounds().y,
+							tiles[i][j].getBounds().width, tiles[i][j].getBounds().height));
 
 				}
 			}
 		}
 
 		// Create Player and add him to mob list
-		Game.level.player = new Player(Game.level.entrance.pos.x,
-				Game.level.entrance.pos.y + Game.level.entrance.bounds.height / 2, tileSize / 4, tileSize / 4,
-				Textures.knightRunning);
-		Game.level.mobs.add(Game.level.player);
+		Level.player = new Player(Level.entrance.pos.x, Level.entrance.pos.y + Level.entrance.getBounds().height / 2,
+				tileSize / 4, tileSize / 4);
+		Level.mobs.add(Level.player);
 	}
 
-	public void addExit() {
+	private static void addExit() {
 		outerloop: for (int i = tiles.length - 1; i >= 0; i--) {
 			for (int j = tiles[i].length - 1; j >= 0; j--) {
 				if (!tiles[i][j].solid && checkNeighbours(new Point(i, j), false) >= 4) {
-					Game.level.exit = tiles[i][j];
-					Game.animationManager.animations.add(new Animation(Textures.exit, 3, 1, 5, Game.level.exit));
+					Level.exit = tiles[i][j];
+					Level.exit.setTexture(Textures.DEBUG);
 					break outerloop;
 				}
 			}
 		}
 	}
 
-	public void addTextures() {
+	private static void addTextures() {
 		// Add textures to all tiles in level
 		int w = 16, h = 16;
 		TextureRegion floor[][] = Textures.floor_wood.split(w, h);
-		TextureRegion wall[][] = Textures.wall_panel.split(w, h);
+		TextureRegion wall[][] = Textures.wall_wood.split(w, h);
 		System.out.println(floor[0].length);
 		for (int i = 0; i < tiles.length; i++) {
 			for (int j = 0; j < tiles[i].length; j++) {
-				if(tiles[i][j].solid && checkNeighbours(new Point(i,j), true) == 4){
-					tiles[i][j].texture = Textures.black_tile;
+				if (tiles[i][j].solid && checkNeighbours(new Point(i, j), true) == 4) {
+					tiles[i][j].setTexture(Textures.black_tile);
 					continue;
 				}
 				if (!tiles[i][j].solid) {
-					tiles[i][j].texture = floor[0][j % 2];
+					tiles[i][j].setTexture(floor[0][j % 2]);
 				} else {
-					tiles[i][j].texture = wall[0][j % 2];
-
+					tiles[i][j].setTexture(wall[0][j % 2]);
 				}
 			}
 		}
 
 	}
 
-	public void connect() {
+	private static void connect() {
 
 		for (int i = 0; i < tiles.length; i++) {
 			for (int j = 0; j < tiles[i].length; j++) {
@@ -170,7 +157,7 @@ public class LevelGenerator {
 		}
 	}
 
-	public int checkForRoom(Point p) {
+	private static int checkForRoom(Point p) {
 		// Checks around a tile how many non-solid tiles are a room
 		int n = 0;
 		for (int i = 0; i < allRooms.size(); i++) {
@@ -186,7 +173,7 @@ public class LevelGenerator {
 		return n;
 	}
 
-	public void generateMaze() {
+	private static void generateMaze() {
 		int sx = (int) (Math.random() * (tiles.length - 4)) + 2;
 		int sy = (int) (Math.random() * (tiles[0].length - 4)) + 2;
 		while (!tiles[sx][sy].solid) {
@@ -241,7 +228,7 @@ public class LevelGenerator {
 
 	}
 
-	public int checkNeighbours(Point p, boolean solid) {
+	private static int checkNeighbours(Point p, boolean solid) {
 		// Returns neighbours that are part of the maze
 		int n = 0;
 		if (p.x > 0 && tiles[p.x - 1][p.y].solid == solid)
@@ -256,7 +243,7 @@ public class LevelGenerator {
 
 	}
 
-	public void generateRooms() {
+	private static void generateRooms() {
 		// Spawn rooms
 		int attempts = 1000;
 		int minRoomWidth = 5;
@@ -290,7 +277,7 @@ public class LevelGenerator {
 
 	}
 
-	public void createRoom(Rectangle r) {
+	private static void createRoom(Rectangle r) {
 
 		// Edit all tiles with generated rooms
 		for (int i = 0; i < tiles.length; i++) {
@@ -302,7 +289,7 @@ public class LevelGenerator {
 		}
 	}
 
-	public int tileDistance(int x1, int y1, int x2, int y2) {
+	private static int tileDistance(int x1, int y1, int x2, int y2) {
 		return Math.abs(x1 - x2) + Math.abs(y1 - y2);
 	}
 }

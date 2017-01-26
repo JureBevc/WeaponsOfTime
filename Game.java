@@ -17,9 +17,6 @@ public class Game extends ApplicationAdapter {
 
 	public static Input input;
 
-	public static LevelGenerator levelGenerator;
-	public static Level level;
-
 	public static AnimationManager animationManager;
 
 	@Override
@@ -35,11 +32,10 @@ public class Game extends ApplicationAdapter {
 
 		Textures.init();
 		animationManager = new AnimationManager();
-		
+
 		/* Generate level */
-		level = new Level();
-		levelGenerator = new LevelGenerator(level);
-		levelGenerator.createMap(50, 50);
+		Level.init();
+		LevelGenerator.createMap(50, 50);
 
 		Renderer.init();
 		Renderer.zoomCam(Renderer.SCALE);
@@ -52,7 +48,7 @@ public class Game extends ApplicationAdapter {
 
 	public void update() {
 
-		level.updateLevel();
+		Level.updateLevel();
 		animationManager.update();
 		input.LMB_Click = false;
 	}
@@ -64,12 +60,13 @@ public class Game extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0.1f, 0f, 0.1f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		Renderer.moveCam(level.player.pos.x, level.player.pos.y);
-		Renderer.sb.begin();
-		level.renderLevel();
-		animationManager.render();
+		Renderer.moveCam(Level.player.pos.x, Level.player.pos.y); // move cam to player (always on center)
+		Renderer.sb.begin(); // Begin renderer
 
-		Renderer.sb.end();
+		Level.renderLevel(); // render the level
+		animationManager.render(); // render the animations
+
+		Renderer.sb.end(); // End renderer
 
 	}
 
